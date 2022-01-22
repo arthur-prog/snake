@@ -20,6 +20,7 @@ class _SnakeState extends State<Snake> {
   late int y;
   late int xApple;
   late int yApple;
+  int snake_size = 1;
   String center_text = "";
   String lost_text = "Game Over sale merde";
   String direction = "";
@@ -98,11 +99,12 @@ class _SnakeState extends State<Snake> {
   }
 
   void checkApple(){
-    // for(var i = 0; i < x+20; i++){
-    //
-    // }
-    if ((xApple < x && x < xApple + 20) && (yApple < y && y < yApple + 20)){
-      print("ok");
+    for(var i = 0; i < 20; i++){
+      for(var j = 0; j < 20; j++){
+        if ((xApple < x+i && x+i < xApple + 20) && (yApple < y+j && y+j < yApple + 20)){
+          print("ok");
+        }
+      }
     }
   }
 
@@ -146,7 +148,7 @@ class _SnakeState extends State<Snake> {
                                   direction = "left";
                                 });
                                 while(direction == "left"){
-                                  await new Future.delayed(const Duration(milliseconds : 100));
+                                  await new Future.delayed(const Duration(milliseconds : 10));
                                   setState(() {
                                     mouvement(direction);
                                   });
@@ -167,7 +169,7 @@ class _SnakeState extends State<Snake> {
                                     direction = "top";
                                   });
                                   while(direction == "top"){
-                                    await new Future.delayed(const Duration(milliseconds : 100));
+                                    await new Future.delayed(const Duration(milliseconds : 10));
                                     setState(() {
                                       mouvement(direction);
                                     });
@@ -186,7 +188,7 @@ class _SnakeState extends State<Snake> {
                                     direction = "bottom";
                                   });
                                   while(direction == "bottom"){
-                                    await new Future.delayed(const Duration(milliseconds : 100));
+                                    await new Future.delayed(const Duration(milliseconds : 10));
                                     setState(() {
                                       mouvement(direction);
                                     });
@@ -207,7 +209,7 @@ class _SnakeState extends State<Snake> {
                                 direction = "right";
                               });
                               while(direction == "right"){
-                                await new Future.delayed(const Duration(milliseconds : 100));
+                                await new Future.delayed(const Duration(milliseconds : 10));
                                 setState(() {
                                   mouvement(direction);
                                 });
