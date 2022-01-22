@@ -228,14 +228,25 @@ class _SnakeState extends State<Snake> {
                       ),
                       ),
                   ),
-                  Piece(
+                  Positioned(
+                    top: (MediaQuery.of(context).size.height / 5)*4 +30,
+                    right: MediaQuery.of(context).size.width * 0.75,
+                      child: Text(
+                        snake_size.toString(),
+                        style: TextStyle(
+                          color: Colors.blue,
+                          backgroundColor: Colors.black,
+                        ),
+                      ),
+                    ),
+                  Piece(//tete du snake
                     posX: x,
                     posY: y,
                     // 4
                     size: 20,
                     color: Colors.blue,
                   ),
-                  Piece(
+                  Piece(//pomme
                     posX: xApple,
                     posY: yApple,
                     // 4
