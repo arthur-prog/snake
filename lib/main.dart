@@ -1,3 +1,6 @@
+import 'dart:io';
+import 'dart:math';
+
 import 'package:flutter/material.dart';
 import 'piece.dart';
 
@@ -15,7 +18,11 @@ class Snake extends StatefulWidget {
 class _SnakeState extends State<Snake> {
   late int x;
   late int y;
+  late int xApple;
+  late int yApple;
   String center_text = "";
+  String lost_text = "Game Over sale merde";
+  String direction = "";
 
   @override
   void initState() {
@@ -23,6 +30,80 @@ class _SnakeState extends State<Snake> {
     super.initState();
     x = 185;
     y = 300;
+    createRandowApple();
+  }
+
+  dynamic mouvement(String direction){
+    switch (direction) {
+      case "top":
+        {
+          if (y > 50) {
+            y = y - 2;
+            return y;
+          }
+          else {
+            center_text = lost_text;
+            return center_text;
+          }
+        }
+
+      case "bottom":
+        {
+          if (y < (MediaQuery.of(context).size.height/5)*4-25){
+            y = y + 2;
+            return y;
+          }
+          else{
+            center_text = lost_text;
+            return center_text;
+          }
+        }
+
+      case "right":
+        {
+          if (x < MediaQuery.of(context).size.width-20){
+            x = x + 2;
+            return x;
+          }
+          else{
+            center_text = lost_text;
+            return center_text;
+          }
+        }
+
+      case "left":
+        {
+            if (x > 0){
+              x = x - 2;
+              return x;
+            }
+            else{
+              center_text = lost_text;
+              return center_text;
+            }
+        }
+
+      default:
+        {
+          center_text = "Probleme dans mouvement";
+          return center_text;
+        }
+    }
+  }
+
+  void createRandowApple(){
+    var rng = Random();
+    xApple = rng.nextInt(320)+20;//xMIN=20 xMAX=340
+    yApple = rng.nextInt(550)+70;//yMIN=70 yMAX=620
+  }
+
+  void checkApple(){
+    // for(var i = 0; i < x+20; i++){
+    //
+    // }
+    if ((xApple < x && x < xApple + 20) && (yApple < y && y < yApple + 20)){
+      print("ok");
+    }
   }
 
   @override
@@ -32,6 +113,14 @@ class _SnakeState extends State<Snake> {
               child: Stack(
                 alignment: AlignmentDirectional.topStart,
                 children: [
+                  Positioned(
+                      height: 50,
+                      width: MediaQuery.of(context).size.width,
+                      top: 0,
+                      child: Container(
+                        color: Colors.grey[600],
+                      ),
+                  ),
                   Positioned(
                       child: Center(
                         child: Text(
@@ -47,22 +136,22 @@ class _SnakeState extends State<Snake> {
                     width: MediaQuery.of(context).size.width,
                     top: (MediaQuery.of(context).size.height / 5)*4,
                     child: Container(
-                        color: Colors.grey[300],
+                        color: Colors.grey[600],
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: <Widget>[
                           IconButton(
-                              onPressed: () {
+                              onPressed: () async {
                                 setState(() {
-                                  if (x > 0){
-                                    x = x - 10;
-                                  }
-                                  else{
-                                    setState(() {
-                                      center_text = "Game Over sale merde";
-                                    });
-                                  }
+                                  direction = "left";
                                 });
+                                while(direction == "left"){
+                                  await new Future.delayed(const Duration(milliseconds : 100));
+                                  setState(() {
+                                    mouvement(direction);
+                                  });
+                                  checkApple();
+                                }
                               },
                               icon: Icon(
                                 Icons.arrow_back,
@@ -73,17 +162,17 @@ class _SnakeState extends State<Snake> {
                           Column(
                             children: <Widget>[
                               IconButton(
-                                onPressed: () {
+                                onPressed: () async {
                                   setState(() {
-                                    if (y > 0){
-                                      y = y - 10;
-                                    }
-                                    else{
-                                      setState(() {
-                                        center_text = "Game Over sale merde";
-                                      });
-                                    }
+                                    direction = "top";
                                   });
+                                  while(direction == "top"){
+                                    await new Future.delayed(const Duration(milliseconds : 100));
+                                    setState(() {
+                                      mouvement(direction);
+                                    });
+                                    checkApple();
+                                  }
                                 },
                                 icon: Icon(
                                   Icons.arrow_upward,
@@ -92,17 +181,17 @@ class _SnakeState extends State<Snake> {
                               ),
                               SizedBox(height: MediaQuery.of(context).size.height/14),
                               IconButton(
-                                onPressed: () {
+                                onPressed: () async {
                                   setState(() {
-                                    if (y < (MediaQuery.of(context).size.height/5)*4-25){
-                                      y = y + 10;
-                                    }
-                                    else{
-                                      setState(() {
-                                        center_text = "Game Over sale merde";
-                                      });
-                                    }
+                                    direction = "bottom";
                                   });
+                                  while(direction == "bottom"){
+                                    await new Future.delayed(const Duration(milliseconds : 100));
+                                    setState(() {
+                                      mouvement(direction);
+                                    });
+                                    checkApple();
+                                  }
                                 },
                                 icon: Icon(
                                   Icons.arrow_downward,
@@ -113,17 +202,17 @@ class _SnakeState extends State<Snake> {
                           ),
                           SizedBox(width: MediaQuery.of(context).size.width/5,),
                           IconButton(
-                            onPressed: () {
+                            onPressed: () async {
                               setState(() {
-                                if (x < MediaQuery.of(context).size.width-20){
-                                  x = x + 10;
-                                }
-                                else{
-                                  setState(() {
-                                    center_text = "Game Over sale merde";
-                                  });
-                                }
+                                direction = "right";
                               });
+                              while(direction == "right"){
+                                await new Future.delayed(const Duration(milliseconds : 100));
+                                setState(() {
+                                  mouvement(direction);
+                                });
+                                checkApple();
+                              }
                             },
                             icon: Icon(
                               Icons.arrow_forward,
@@ -141,14 +230,19 @@ class _SnakeState extends State<Snake> {
                     size: 20,
                     color: Colors.blue,
                   ),
+                  Piece(
+                    posX: xApple,
+                    posY: yApple,
+                    // 4
+                    size: 20,
+                    color: Colors.green,
+                  ),
                 ],
               ),
             ),
     );
   }
 }
-
-
 
 
 
