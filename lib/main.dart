@@ -102,7 +102,10 @@ class _SnakeState extends State<Snake> {
     for(var i = 0; i < 20; i++){
       for(var j = 0; j < 20; j++){
         if ((xApple < x+i && x+i < xApple + 20) && (yApple < y+j && y+j < yApple + 20)){
-          print("ok");
+          setState(() {
+            snake_size++;
+            createRandowApple();
+          });
         }
       }
     }
