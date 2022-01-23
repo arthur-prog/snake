@@ -3,6 +3,7 @@ import 'dart:math';
 
 import 'package:flutter/material.dart';
 import 'piece.dart';
+import 'package:animated_text_kit/animated_text_kit.dart';
 
 void main() => runApp(MaterialApp(
   home: Snake(),
@@ -20,10 +21,11 @@ class _SnakeState extends State<Snake> {
   late int y;
   late int xApple;
   late int yApple;
-  int snake_size = 1;
+  late int snake_size;
   String center_text = "";
   String lost_text = "Game Over sale merde";
   String direction = "";
+  double arrow_size = 90;
 
   @override
   void initState() {
@@ -31,6 +33,7 @@ class _SnakeState extends State<Snake> {
     super.initState();
     x = 185;
     y = 300;
+    snake_size = 1;
     createRandowApple();
   }
 
@@ -86,8 +89,7 @@ class _SnakeState extends State<Snake> {
 
       default:
         {
-          center_text = "Probleme dans mouvement";
-          return center_text;
+
         }
     }
   }
@@ -111,6 +113,21 @@ class _SnakeState extends State<Snake> {
     }
   }
 
+  void checkRestart() async {
+    if(center_text == lost_text){
+        direction = "";
+        await new Future.delayed(
+            const Duration(seconds: 3));
+      setState(() {
+        center_text = "";
+        x = 185;
+        y = 300;
+        snake_size = 1;
+        createRandowApple();
+      });
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -127,14 +144,15 @@ class _SnakeState extends State<Snake> {
                       ),
                   ),
                   Positioned(
-                      child: Center(
-                        child: Text(
-                          center_text,
-                          style: TextStyle(
-                            color: Colors.red,
-                          ),
+                    child: Center(
+                      child: Text(
+                        center_text,
+                        style: TextStyle(
+                          fontSize: 30,
+                          color: Colors.red,
                         ),
                       ),
+                    ),
                   ),
                   Positioned(
                     height: MediaQuery.of(context).size.height / 5,
@@ -142,91 +160,111 @@ class _SnakeState extends State<Snake> {
                     top: (MediaQuery.of(context).size.height / 5)*4,
                     child: Container(
                         color: Colors.grey[600],
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: <Widget>[
-                          IconButton(
-                              onPressed: () async {
-                                setState(() {
-                                  direction = "left";
-                                });
-                                while(direction == "left"){
-                                  await new Future.delayed(const Duration(milliseconds : 10));
-                                  setState(() {
-                                    mouvement(direction);
-                                  });
-                                  checkApple();
-                                }
-                              },
-                              icon: Icon(
-                                Icons.arrow_back,
-                                size: 50,
-                              ),
-                          ),
-                          SizedBox(width: MediaQuery.of(context).size.width/5,),
-                          Column(
-                            children: <Widget>[
-                              IconButton(
-                                onPressed: () async {
-                                  setState(() {
-                                    direction = "top";
-                                  });
-                                  while(direction == "top"){
-                                    await new Future.delayed(const Duration(milliseconds : 10));
-                                    setState(() {
-                                      mouvement(direction);
-                                    });
-                                    checkApple();
-                                  }
-                                },
-                                icon: Icon(
-                                  Icons.arrow_upward,
-                                  size: 50,
-                                ),
-                              ),
-                              SizedBox(height: MediaQuery.of(context).size.height/14),
-                              IconButton(
-                                onPressed: () async {
-                                  setState(() {
-                                    direction = "bottom";
-                                  });
-                                  while(direction == "bottom"){
-                                    await new Future.delayed(const Duration(milliseconds : 10));
-                                    setState(() {
-                                      mouvement(direction);
-                                    });
-                                    checkApple();
-                                  }
-                                },
-                                icon: Icon(
-                                  Icons.arrow_downward,
-                                  size: 50,
-                                ),
-                              ),
-                            ],
-                          ),
-                          SizedBox(width: MediaQuery.of(context).size.width/5,),
-                          IconButton(
-                            onPressed: () async {
-                              setState(() {
-                                direction = "right";
-                              });
-                              while(direction == "right"){
-                                await new Future.delayed(const Duration(milliseconds : 10));
-                                setState(() {
-                                  mouvement(direction);
-                                });
-                                checkApple();
-                              }
-                            },
-                            icon: Icon(
-                              Icons.arrow_forward,
-                              size: 50,
-                            ),
-                          ),
-                        ],
                       ),
+                  ),
+                  Positioned(
+                    top: (MediaQuery.of(context).size.height / 10) * 9 - (arrow_size / 2),
+                    left: (MediaQuery.of(context).size.width/3) / 2 - (arrow_size / 2),
+                    child: IconButton(
+                      iconSize: arrow_size,
+                      onPressed: () async {
+                        if (direction != "left") {
+                          setState(() {
+                            direction = "left";
+                          });
+                          while (direction == "left") {
+                            await new Future.delayed(
+                                const Duration(milliseconds: 10));
+                            setState(() {
+                              mouvement(direction);
+                            });
+                            checkApple();
+                            checkRestart();
+                          }
+                        }
+                      },
+                      icon: Icon(
+                        Icons.arrow_back,
                       ),
+                    ),
+                  ),
+                  Positioned(
+                    top: ((MediaQuery.of(context).size.height / 5) * 4) + ((MediaQuery.of(context).size.height / 10) / 2) - (arrow_size / 2),
+                    left: MediaQuery.of(context).size.width / 2 - (arrow_size / 2),
+                    child: IconButton(
+                      iconSize: arrow_size,
+                      onPressed: () async {
+                        if (direction != "top") {
+                          setState(() {
+                            direction = "top";
+                          });
+                          while (direction == "top") {
+                            await new Future.delayed(
+                                const Duration(milliseconds: 10));
+                            setState(() {
+                              mouvement(direction);
+                            });
+                            checkApple();
+                            checkRestart();
+                          }
+                        }
+                      },
+                      icon: Icon(
+                        Icons.arrow_upward,
+                      ),
+                    ),
+                  ),
+                  Positioned(
+                    top: ((MediaQuery.of(context).size.height / 5) * 4) + (((MediaQuery.of(context).size.height / 10) / 2 )* 3) - (arrow_size / 2),
+                    left: MediaQuery.of(context).size.width / 2 - (arrow_size / 2),
+                    child: IconButton(
+                      iconSize: arrow_size,
+                      onPressed: () async {
+                        if (direction != "bottom") {
+                          setState(() {
+                            direction = "bottom";
+                          });
+                          while (direction == "bottom") {
+                            await new Future.delayed(
+                                const Duration(milliseconds: 10));
+                            setState(() {
+                              mouvement(direction);
+                            });
+                            checkApple();
+                            checkRestart();
+                          }
+                        }
+                      },
+                      icon: Icon(
+                        Icons.arrow_downward,
+                      ),
+                    ),
+                  ),
+                  Positioned(
+                    top: (MediaQuery.of(context).size.height / 10) * 9 - (arrow_size / 2),
+                    left: ((MediaQuery.of(context).size.width/3)*2) + ((MediaQuery.of(context).size.width/3)/2) - (arrow_size / 2),
+                    child: IconButton(
+                      iconSize: arrow_size,
+                      onPressed: () async {
+                        if (direction != "right") {
+                          setState(() {
+                            direction = "right";
+                          });
+                          while (direction == "right") {
+                            await new Future.delayed(
+                                const Duration(milliseconds: 10));
+                            setState(() {
+                              mouvement(direction);
+                            });
+                            checkApple();
+                            checkRestart();
+                          }
+                        }
+                      },
+                      icon: Icon(
+                        Icons.arrow_forward,
+                      ),
+                    ),
                   ),
                   Positioned(
                     top: (MediaQuery.of(context).size.height / 5)*4 +30,
@@ -234,6 +272,7 @@ class _SnakeState extends State<Snake> {
                       child: Text(
                         snake_size.toString(),
                         style: TextStyle(
+                          fontSize: 20,
                           color: Colors.blue,
                           backgroundColor: Colors.black,
                         ),
